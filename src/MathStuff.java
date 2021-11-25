@@ -135,7 +135,7 @@ public abstract class MathStuff {
         }
         
         // Step five: Calculate the output base "b"
-        long b_outputBase = 0;
+        long b_outputBase = 1;
         for (Power po : powerList) {
             b_outputBase *= power(po);
         }
