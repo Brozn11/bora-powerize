@@ -1,4 +1,5 @@
 //# BEGIN SKELETON
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,7 +112,35 @@ public abstract class MathStuff {
      *      e <= \result.exponent)}
      */
     public static Power powerize(int n) throws IllegalArgumentException {
-        return null;
+        // Step one: Get power list
+        ArrayList<Power> powerList = getPowerList(1728);
+        
+        // Step two: Creaste list of exponents
+        // ArrayList<Integer> exponentList = new ArrayList<Integer>();
+        // for (Power po : powerList) {
+        //     exponentList.add(po.exponent);
+        // }
+        
+        int[] exponentArray = new int[powerList.size()];
+        for (int i = 0; i < powerList.size(); i++) {
+            exponentArray[i] = powerList.get(i).exponent;
+        }
+        
+        // Step three: get greatest common divisor for our exponent list
+        int g_gcdOfExponentList = findGCD(exponentArray);
+        
+        // Step four: reduce the powers (divide each exponent of the power list by g)
+        for (int i = 0; i < powerList.size(); i++) {
+            powerList.get(i).exponent /= g_gcdOfExponentList;
+        }
+        
+        // Step five: Calculate the output base "b"
+        long b_outputBase = 0;
+        for (Power po : powerList) {
+            b_outputBase *= power(po);
+        }
+       
+        return new Power((int) b_outputBase, g_gcdOfExponentList);
     }
     
     public static ArrayList<Power> getPowerList(int n){
@@ -153,6 +182,33 @@ public abstract class MathStuff {
             }
         }
         return returnPowerList;
+    }
+
+    // return the greatest common divisor of 2 integers
+    static int gcd(int a, int b)
+    {
+        if (a == 0)
+            return b;
+        return gcd(b % a, a);
+    }
+ 
+    // Function to find gcd of array of
+    // numbers
+    // in one case: [6,3]
+    // It is the list of exponents from the PowerList
+    static int findGCD(int[] arr)
+    {
+        int result = 0;
+        for (int element: arr){
+            result = gcd(result, element);
+ 
+            if(result == 1)
+            {
+               return 1;
+            }
+        }
+ 
+        return result;
     }
 
     public static ArrayList<Integer> primeFactors(int number) {
