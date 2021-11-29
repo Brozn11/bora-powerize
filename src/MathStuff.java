@@ -6,7 +6,11 @@ import java.util.List;
  * Library with static mathematical functions.
  *
 <!--//# BEGIN TODO Name, student id, and date-->
-<p><b>Replace this line</b></p>
+<p><b>
+ * @author Bora Ozen
+ * @id 1555685
+ * @date 27/11/2021
+</b></p>
 <!--//# END TODO-->
 */
 // -----8<----- cut line -----8<-----
@@ -111,14 +115,13 @@ public abstract class MathStuff {
      *      e <= \result.exponent)}
      */
     public static Power powerize(int n) throws IllegalArgumentException {
-        // Step one: Get power list
-        ArrayList<Power> powerList = getPowerList(1728);
+//# BEGIN TODO Implementation of powerize
+        if (n < 2) {
+            throw new IllegalArgumentException("n: smaller than 2");
+        }
+        ArrayList<Power> powerList = getPowerList(n);
         
-        // Step two: Creaste list of exponents
-        // ArrayList<Integer> exponentList = new ArrayList<Integer>();
-        // for (Power po : powerList) {
-        //     exponentList.add(po.exponent);
-        // }
+       
         
         int[] exponentArray = new int[powerList.size()];
         for (int i = 0; i < powerList.size(); i++) {
@@ -141,14 +144,25 @@ public abstract class MathStuff {
        
         return new Power((int) b_outputBase, g_gcdOfExponentList);
     }
+        
+//# END TODO
     
-    public static ArrayList<Power> getPowerList(int n){
+
+//# BEGIN TODO Contracts and implementations of auxiliary functions.
+    /**
+     * Returns prime factorization of an integer as powerlist.
+     *
+     * @param n  the number to return the prime factorization (powerlist of)
+     * @return  power decomposition of {@code n} as a list of Power objects
+     * @pre {@code 2 <= n}
+     * @post {@code (\forall int b, int e; b^e % n ==0)
+     *      
+     */
+public static ArrayList<Power> getPowerList(int n){
         // return list of Power objects for each factor
-        //
-        // 1728 would return Power object with 2,6 and 3,3
         // Step one: factorize
-        ArrayList<Integer> factors = primeFactors(n);
-        // We now have a List with 2,2,2,2,2,2,3,3,3
+        ArrayList<Integer> factors = primeFactorization(n);
+        
         
         // create new List of Power objects
         ArrayList<Power> returnPowerList = new ArrayList<Power>();
@@ -164,7 +178,14 @@ public abstract class MathStuff {
             // if the current item is the same as the previous one, we increment the counter
             if (factors.get(i) == last_value){
                 exponent_count++;
-            } else {
+                if (i == factors.size()-1){
+                    returnPowerList.add(new Power(last_value, exponent_count));
+                    return returnPowerList;
+                }
+              
+            } 
+            
+            else {
                 // the current item is the first of the next base
                 returnPowerList.add(new Power(last_value, exponent_count));
                 exponent_count = 1;
@@ -176,30 +197,32 @@ public abstract class MathStuff {
                 }
             }
 
-            if (i == factors.size()-1){
-                returnPowerList.add(new Power(last_value, exponent_count));
-            }
+            
         }
         return returnPowerList;
     }
-
-    // return the greatest common divisor of 2 integers
-    static int gcd(int a, int b)
-    {
+/**
+     * Returns gcd of 2 integers
+     *
+     * @param a,b integers to get the gcd of
+     * @return gcd of a and b
+     * @pre {@code 2 <= a && 2<= b}
+     * @post {@code result == gcd(a,b))}
+     */
+static int gcdEuc(int a, int b){
         if (a == 0)
             return b;
-        return gcd(b % a, a);
+        return gcdEuc(b % a, a);
     }
  
     // Function to find gcd of array of
     // numbers
     // in one case: [6,3]
     // It is the list of exponents from the PowerList
-    static int findGCD(int[] arr)
-    {
+    static int findGCD(int[] a){
         int result = 0;
-        for (int element: arr){
-            result = gcd(result, element);
+        for (int element: a){
+            result = gcdEuc(result, element);
  
             if(result == 1)
             {
@@ -209,22 +232,28 @@ public abstract class MathStuff {
  
         return result;
     }
-
-    public static ArrayList<Integer> primeFactors(int number) {
+    /**
+     * Returns ArrayList<Integer> of prime factors of number
+     * @param number to get the factorization of
+     * @return prime factorization of number as ArrayList<Integer>
+     * @pre {@code 2 <= nubmer}
+     * @post {@code factorlist(\forall i;0<= i<factorlist.size-1; factorlist.has(i); multiplication of all a(i) = number}
+     */
+    public static ArrayList<Integer> primeFactorization(int number) {
         int n = number;
-        ArrayList<Integer> factors = new ArrayList<Integer>();
+        ArrayList<Integer> factorlist = new ArrayList<Integer>();
         for (int i = 2; i <= n; i++) {
             while (n % i == 0) {
-                factors.add(i);
+                factorlist.add(i);
                 n /= i;
             }
         }
-        return factors;
+        return factorlist;
     }
 
-//# BEGIN TODO Contracts and implementations of auxiliary functions.
-// Replace this line
-//# END TODO
 
+//# END TODO
 }
+
+
 //# END SKELETON
